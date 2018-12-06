@@ -7,6 +7,8 @@
 #define FREQSTORESIZE 1028
 
 int repeatedfreq(int *, int, int); 
+/* Adds a number one by one */
+int add(int, int);
 
 int main(){
   /* i and j are two counters */
@@ -51,6 +53,9 @@ int main(){
       i = 0;
     }
   }
+
+  free(buff);
+  free(freqstore);
   return 0;
 }
 
