@@ -7,12 +7,11 @@ CC = gcc
 CFLAGS  = -g -Wall
 
 # the build target executable:
-TARGET = 1
+FIRST=1
+SECOND=2
 
-all: $(TARGET)
+f: $(FIRST).c
+	$(CC) $(CFLAGS) -o $(FIRST) $(FIRST).c
 
-$(TARGET): $(TARGET).c
-	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c
-
-clean:
-	$(RM) $(TARGET)
+s: $(SECOND).c
+	$(CC) $(CFLAGS) -o $(SECOND) $(SECOND).c
