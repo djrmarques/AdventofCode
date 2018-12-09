@@ -6,14 +6,15 @@
 /* cat INPUT | wc -l */
 #define FREQSTORESIZE 1028
 
-int repeatedfreq(int *, int, int); 
-/* Adds a number one by one */
-int add(int, int);
+/* Check if frequency is in list */
+int checkfreqlist(int *, int, int); 
+
+void printbuffer(int*, int);
 
 int main(){
   /* i and j are two counters */
   /* ch stores the character of a file */
-  int ch, i=0, j=0, sum=0;
+  int ch, i=0, j=0, sum=0, dfreq, ENDFLAG=0;
 
   /* Buffer that stores the character  */
   char *buff;
@@ -26,43 +27,93 @@ int main(){
   FILE *fp;
   fp = fopen(INPUT, "r");
 
-  while ((ch = fgetc(fp)) != EOF){
-    if(ch != '\n'){
+  /* Reads File continuously */
+  while (ENDFLAG==0){
+    while (((ch = fgetc(fp)) != EOF) && (ENDFLAG==0)){
+        /* If finds a new line */
+        if(ch != '\n'){
 
-      *buff++ = ch;
-      i++;
+        *buff++ = ch;
+        i++;
+        }
+        else{
+        /* Adds null terminator */
+        *buff = '\0';
+        /* Decrements pointer to original position */
+        buff -= i;
+        /* Sets i back to 0 */
+        i = 0;
+
+        /* Stores Frequency */
+        dfreq = atoi(buff); 
+
+        /* Sums value to sum one by one */
+        while (dfreq != 0){
+
+          /* printf("midsum: %d\n", sum); */
+          /* Checks if it is negative or positive */
+          if(dfreq < 0){
+            sum -= 1;
+            dfreq +=1;
+          }else{
+            sum += 1;
+            dfreq -=1;
+          }
+
+          /* printf("  midsum: %d\n", sum); */
+          /* Checks if freq is repeated */
+          /* j is the size of the frquency store buffer */
+          ENDFLAG = checkfreqlist(freqstore, sum, j);
+
+          if (ENDFLAG){
+            break;
+          }
+        }
+
+        /* printf("sum: %d\n", sum); */
+        *(freqstore+j) = sum;
+        /* printbuffer(freqstore, j); */
+        j++;                     
+      }
     }
-    else{
-      /* Decrements Pointer to first position*/
-      *buff = '\0';
-      buff -= i;
 
-      /* Stores Frequency */
-      sum += atoi(buff); 
-      printf("%d\n", sum);
-      *freqstore++ = sum;
-      j++;                     
+      /* Reads File again  */
+      /* There is probably a better way to do this */
+      fp -= FREQSTORESIZE;
+  }
 
-      /* Checks if freq already exists */
-      if (repeatedfreq(freqstore-j, j, sum)){
-        printf("%d\n", sum);
+  /* Prints answer */
+  printf("ANSWER: %d\n", sum);
+  /* free(buff); */
+  /* free(freqstore); */
+  return 1;
+}
+
+int checkfreqlist(int* freqstore, int sum, int j){ 
+    /* Returns boolean */
+    int i = 0;
+
+    /* Checks */
+    while(i < j){
+      if (*(freqstore+i) == sum){
+        printf("found ans: %d == %d\n", sum, *(freqstore+i));
         return 1;
       }
-
-      /* Sets i back to 0 */
-      i = 0;
+      i++;
     }
+    return 0;
   }
 
-  free(buff);
-  free(freqstore);
-  return 0;
-}
+void printbuffer(int* freqstore, int j){
+    /* Returns boolean */
+    int i = 0;
 
-int repeatedfreq(int *freqstore, int j, int freq){
-  int i = 0;
-  while(i++ < j-1){
-    if (*freqstore++ == freq){return 1;}
+    printf("BUFFER: ");
+    /* Checks */
+    while(i <= j){
+      printf("%d ", *(freqstore+i));
+      i++;
+    }
+    printf("\n");
   }
-  return 0;
-}
+
