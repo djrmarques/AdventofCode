@@ -30,7 +30,7 @@ int main(int argc, char **argv){
 void count(char *buff, int *n2, int *n3){
 
   /* Stores letters that were already evaluated */
-  char invalid[30];
+  char invalid[30] = "";
 
   char current_char;
 
@@ -54,7 +54,7 @@ void count(char *buff, int *n2, int *n3){
       }
 
     /* Increments the buffer by one */
-    buff -= j - 1;
+    buff -= (j - 1);
     /* Resets j */
     j = 0;
 
@@ -69,8 +69,9 @@ void count(char *buff, int *n2, int *n3){
     }
 
     /* Breaks out of cicle of already found twos and threes */
-    if(f3 && f2){break;}
+    if(f3 & f2){break;}
 
+    /* Resets the count! */
     current_count=0;
   }
 }
