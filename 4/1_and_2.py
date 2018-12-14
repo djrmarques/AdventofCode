@@ -35,4 +35,13 @@ ans_df["SUM"] = ans_df.sum(axis=1)
 sleepy_guard = ans_df["SUM"].idxmax()
 minute = ans_df.drop("SUM", axis=1).loc[sleepy_guard, :].idxmax()
 
+# Anwer to 1
+print("Answer to 1")
 print(int(minute) * int(sleepy_guard))
+
+# Answer to 2
+print("Answer to 2")
+guard = ans_df.drop("SUM", axis=1).iloc[:, :-1].max(axis=1).idxmax()
+minute = ans_df.drop("SUM", axis=1).loc[guard, :].idxmax()
+print(int(guard)*int(minute))
+
