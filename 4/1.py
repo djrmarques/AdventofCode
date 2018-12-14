@@ -2,13 +2,14 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 
-# Prepares the data and sorts
+# Input was created by the sh script 
+
+# prepares the data and sorts
 df = pd.read_csv("4/input",sep=" ", header=None)
 df[0] = df[0] + " " + df[1]
 df.drop(1, axis=1, inplace=True)
 df[0] = df[0].apply(lambda x: datetime.strptime(x, "%Y-%m-%d %H:%M"))
 df.sort_values(0, inplace=True)
-
 
 df[3] = df[2].apply(lambda x: x.isnumeric())
 i = df[df[3] == True].index
@@ -19,14 +20,19 @@ df.drop(df[df[2] == df[3]].index, axis=0, inplace=True)
 df.reset_index(inplace=True, drop=True)
 df.columns = ["Date", "State", "ID"]
 
-# Find the time
+# Create and populate the answer table
+ans_df = pd.DataFrame(columns=np.arange(0, 60, 1), index=df["ID"].unique())
+ans_df.fillna(0, inplace=True)
+
 for index in df[df["State"] == "asleep"].index:
-    sleeptime = df.loc[index+1, "Date"] - df.loc[index, "Date"]
-    df.drop(index+1, axis=0 ,inplace=True)
-    df.loc[index, "Date"] = sleeptime
+    start_min = df.loc[index, "Date"].minute
+    end_min = df.loc[index+1, "Date"].minute
 
-df.drop("State", axis=1, inplace=True)
+    ans_df.loc[df.loc[index, "ID"], np.arange(start_min, end_min)] += 1
 
-# Answer
-df.groupby("ID").sum().sort_values("Date").tail(1)
+ans_df["SUM"] = ans_df.sum(axis=1)
 
+sleepy_guard = ans_df["SUM"].idxmax()
+minute = ans_df.drop("SUM", axis=1).loc[sleepy_guard, :].idxmax()
+
+print(int(minute) * int(sleepy_guard))
