@@ -18,7 +18,7 @@ int main(int argc, char **argv){
   while(FLAG){
     FLAG = 0;
     while (buff[i] != '\n'){
-      if(buff[i] != 0){
+      if(buff[i] != '0'){
         if (is_related(buff[i], buff[i+1])){
           buff[i] = '0';
           buff[i+1] = '0';
