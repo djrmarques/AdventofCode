@@ -16,7 +16,7 @@
 from collections import defaultdict
 
 file = "7/awkedinput"
-file = "7/test-input"
+# file = "7/test-input"
 
 all = []              # This will store all the letters
 E = defaultdict(list) # Each entry is a list
@@ -41,14 +41,24 @@ while all:
     # Remove nv from all
     del all[all.index(nv)]
 
+    del_E = []
     # Remove all nv from the dictionary
-    del_list = []
     for key, val in E.items():
-        if val[0] == nv:
-            del_list.append(key)
-    for key in del_list:
-        del E[key]
+        if (val[0] == nv) and (len(val) == 1):
+            del_E.append(key)
+        elif nv in val:
+            del val[val.index(nv)]
+            E[key] = val
+    try:
+        for k in del_E:
+            del E[k]
+    except: 
+        pass
 
-    print(E)
     L.append(nv)
-print(L)
+
+print("Part 1: ")
+print("".join(L))
+print("")
+
+print("Part 2: ")
