@@ -1,7 +1,6 @@
 from collections import defaultdict
 
 file = "7/awkedinput"
-file = "7/test-input"
 
 all = []              # This will store all the letters
 E = defaultdict(list) # Each entry is a list
@@ -19,74 +18,67 @@ all = sorted(list(set(all)))
 
 time = 0
 time_dict = dict(zip((all), [a for a in range(1, len(all) + 1)]))
-workers = 2
+workers = 5
 
 current_jobs = {}               # Jobs currently being done
 
 # Start by the ones that do not have precedence
-while all:
-    # Next letter 
-    # Available jobs 
+while all or current_jobs:
     # E is a dict that contains the precedences for action
     # If some letter is in all but not on E that means that that job
     # has no predecence and therefore can be done in the present turn
     nodes = sorted([a for a in all if a not in E.keys()])
 
-    # Decrement time in current jobs, if there are current jobs
-    completed_jobs = []
+    # Assign job to workers
+    for job in nodes[:workers]:
+        current_jobs[job] = 60 + time_dict[job]
+        workers -= 1
 
-    if len(current_jobs.keys()) > 0:
-        for key in current_jobs.keys():
-            current_jobs[key] -= 1
-            if current_jobs[key] == 0:
-                completed_jobs.append(key)
+        # Remove job from all
+        del all[all.index(job)]
 
-        # Remove completed jobs from dict and add them to L 
-        # by alphabetic order
-        for cjob in completed_jobs:
-            L.append(cjob)
-            del current_jobs[cjob]
-            workers += 1
+    if workers < 0:
+        raise Exception("Negative Workers: {}".format(workers))
 
-    # Checks if there are jobs and workers available
-    if workers > 0 and len(nodes) > 0:
-    # Assign workers to jobs
-        for job in nodes[:workers]:
-            # Add 60 here afterwards
-            current_jobs[job] = time_dict[job]
-            workers -= 1            # Decrement workers
+    # Decrement time in current jobs
+    del_current = []
+    if current_jobs:
+        for key, val in current_jobs.items():
+            # Delete jobs that are finished
+            if val == 1:
+                del_current.append(key)
+            elif val > 1: 
+                current_jobs[key] = val - 1
+            else: 
+                raise Exception("Error deleting current jobs")
 
-    # remove completed jobs from E and all
-    for nv in L:
-        # Remove nv from all
-        if nv in all:
-            del all[all.index(nv)]
+    # Remove finished jobs
+    for job in del_current:
+        del current_jobs[job]
+        L.append(job)
+        workers += 1
 
+        # Remove the assigned jobs from E
         del_E = []
-        # Remove all nv from the dictionary
         for key, val in E.items():
-            if (val[0] == nv) and (len(val) == 1):
+            if (val[0] == job) and (len(val) == 1):
                 del_E.append(key)
-            elif nv in val:
-                del val[val.index(nv)]
-                E[key] = val
-        try:
-            for k in del_E:
-                del E[k]
-        except: 
-            pass
 
-    # Increment time
+            elif job in val:
+                del val[val.index(job)]
+                E[key] = val
+
+        for k in del_E:
+            del E[k]
+
     time += 1
 
-    print("TIME: ", time)
-    print("CurrentJobs: ", current_jobs)
-    print("AvailableJobs:", nodes)
-    print("Nworkers: ", workers)
-    print("All: ", all)
-    print("L: ", L)
-    print("E: ", E)
-    print("")
-
-    if time > 5:break
-
+    # print("TIME: ", time)
+    # print("ALL: ", all)
+    # print("AvailableWorks: ", nodes)
+    # print("E: ", E)
+    # print("NWorkers: ", workers)
+    # print("CurrentWork: ", current_jobs)
+    # print("L: ", L)
+    # print("")
+time
