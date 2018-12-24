@@ -22,65 +22,44 @@ input = "554401"
 size_input = len(input)
 
 recipe_list = "37"
-elf1 = elf(3, 0)
-elf2 = elf(7, 1)
-
-while input not in recipe_list[-7:]:
-    sum_recipes = str(int(elf1.current_recipe) + int(elf2.current_recipe))
-
-    # Separate recipes and append the new recipes to the list
-    recipe_list += str(sum_recipes)
-
-    # Elves pick new recipes
-    elf1.pick_recipe(recipe_list)
-    elf2.pick_recipe(recipe_list)
-
-if input ==  recipe_list[-6:]:
-    print(len(recipe_list) -size_input)
-else: 
-    print(len(recipe_list) - (size_input + 1))
-# 20211327
-
-def solve2(recipe_list, input):
-    while 1:
-        sum_recipes = elf1.current_recipe + elf2.current_recipe
-
-        # Separate recipes and append the new recipes to the list
-        if sum_recipes >= 10:
-            recipe_list.append(sum_recipes // 10)
-            recipe_list.append(sum_recipes % 10)
-        elif sum_recipes < 10:
-            recipe_list.append(sum_recipes)
-
-        # Elfes pick new recipes
-        elf1.pick_recipe(recipe_list)
-        elf2.pick_recipe(recipe_list)
-
-        # Check condition
-        recipe_list.rotate(6)
-        print(recipe_list)
-        if len(recipe_list) >= 6 and "".join([str(recipe_list[a]) for a in range(6)]) == str(input) :
-            print("".join([str(recipe_list[a]) for a in range(6)]))
-            break
-        recipe_list.rotate(-6)
-
-    print("RecipeList: ", len(recipe_list) - 6)
-# solve2(recipe_list, input)
+elf1 = elf("3", 0)
+elf2 = elf("7", 1)
 
 def solve1(input, recipe_list):
-    for _ in range(input + 10):
-        sum_recipes = elf1.current_recipe + elf2.current_recipe
+    for _ in range(int(input) + 10):
+
+        sum_recipes = str(int(elf1.current_recipe) + int(elf2.current_recipe))
 
         # Separate recipes and append the new recipes to the list
-        if sum_recipes >= 10:
-            recipe_list.append(sum_recipes // 10)
-            recipe_list.append(sum_recipes % 10)
-        elif sum_recipes < 10:
-            recipe_list.append(sum_recipes)
+        recipe_list += str(sum_recipes)
 
         # Elfes pick new recipes
         elf1.pick_recipe(recipe_list)
         elf2.pick_recipe(recipe_list)
 
-    print("RecipeList: ", list(recipe_list)[input:input+10])
 
+    print("Part 1: ", recipe_list[int(input):int(input)+10])
+
+def solve2(recipe_list, input):
+    while input not in recipe_list[-7:]:
+        sum_recipes = str(int(elf1.current_recipe) + int(elf2.current_recipe))
+
+        # Separate recipes and append the new recipes to the list
+        recipe_list += str(sum_recipes)
+
+        # Elves pick new recipes
+        elf1.pick_recipe(recipe_list)
+        elf2.pick_recipe(recipe_list)
+
+    if input ==  recipe_list[-6:]:
+        print("Part2: ", len(recipe_list) -size_input)
+    else: 
+        print("Part2: ", len(recipe_list) - (size_input + 1))
+
+solve1(input, recipe_list)
+
+# Restart
+recipe_list = "37"
+elf1 = elf("3", 0)
+elf2 = elf("7", 1)
+solve2(recipe_list, input)
